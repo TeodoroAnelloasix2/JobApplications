@@ -1,6 +1,6 @@
 ﻿param(
-    [string]$source="C:\Users\giaco\OneDrive\Desktop\asix2\powershell",
-    [string]$dest="C:\Users\giaco\OneDrive\Desktop\asix2\powershell\backups",
+    [string]$source="C:\yourpath",
+    [string]$dest="C:\yourpath",
     [int]$days=5
 
 )
