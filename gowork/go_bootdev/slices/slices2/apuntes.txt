@@ -1,0 +1,114 @@
+Slices in Go
+
+99 times out of 100 you will use a slice instead of an array when working with ordered lists.
+Arrays are fixed in size. Once you make an array like [10]int you can't add an 11th element.
+A slice is a dynamically-sized, flexible view of the elements of an array.
+The zero value of slice is nil.
+Non-nil slices always have an underlying array, though it isn't always specified explicitly. 
+To explicitly create a slice on top of an array we can do:
+
+primes := [6]int{2, 3, 5, 7, 11, 13}
+mySlice := primes[1:4]
+// mySlice = {3, 5, 7}
+
+The syntax is:
+
+arrayname[lowIndex:highIndex]
+arrayname[lowIndex:]
+arrayname[:highIndex]
+arrayname[:]
+
+Where lowIndex is inclusive and highIndex is exclusive.
+
+lowIndex, highIndex, or both can be omitted to use the entire array on that side of the colon.
+
+Slices wrap arrays to give a more general, powerful, and convenient interface to sequences of data. 
+Except for items with explicit dimensions such as transformation matrices,
+most array programming in Go is done with slices rather than simple arrays.
+
+Slices hold references to an underlying array, and if you assign one slice to another, both refer to the same array. 
+If a function takes a slice argument, any changes it makes to the elements of the slice will be visible to the caller, 
+analogous to passing a pointer (we'll cover pointers later) to the underlying array. 
+A Read function can therefore accept a slice argument rather than a pointer and a count; 
+the length within the slice sets an upper limit of how much data to read. 
+Here is the signature of the Read() method of the File type in package os:
+
+Referenced from Effective Go
+
+func (f *File) Read(buf []byte) (n int, err error)
+
+Preguntas, Respuestas chat gpt
+
+es cierta esta afirmación verdad?
+Multiple slices can point to the same array
+ChatGPT Plus
+
+Sí, es completamente cierta.
+
+
+En Go, varios slices pueden referirse al mismo array subyacente. 
+Esto significa que si modificas el contenido de un slice, esos cambios serán visibles en otros slices que apunten al mismo array.
+
+Ejemplo:
+
+package main
+
+import "fmt"
+
+func main() {
+    arr := [5]int{10, 20, 30, 40, 50}
+
+    slice1 := arr[1:4] // [20, 30, 40]
+    slice2 := arr[2:5] // [30, 40, 50]
+
+    slice1[1] = 99 // Modifica el segundo elemento de slice1 (arr[2])
+
+    fmt.Println("Array:", arr)       // [10 20 99 40 50]
+    fmt.Println("Slice1:", slice1)   // [20 99 40]
+    fmt.Println("Slice2:", slice2)   // [99 40 50]
+}
+
+✅ ¿Por qué pasa esto?
+
+Los slices no almacenan datos por sí mismos, sino que referencian un array subyacente.
+ Por lo tanto, cualquier modificación afecta a todas las referencias que apuntan al mismo array.
+
+⚠️ Precaución: Si necesitas que los slices sean independientes, debes crear una copia del array o del slice usando copy().
+Tú dijiste:
+Puedo crear un slice sin un array subyacente?
+ChatGPT Plus
+
+No directamente, ya que en Go todo slice siempre tiene un array subyacente. 
+Sin embargo, puedes crear un slice sin definir explícitamente un array al utilizar funciones como make() o al inicializarlo directamente.
+✅ Formas de crear un slice sin declarar un array explícito:
+
+    Usando make():
+    Crea un array subyacente automáticamente.
+
+slice := make([]int, 3) // Crea un slice de tamaño 3 con valores por defecto (0)
+fmt.Println(slice)      // [0 0 0]
+
+Inicialización literal:
+El compilador crea el array por ti.
+
+slice := []int{1, 2, 3}
+fmt.Println(slice) // [1 2 3]
+
+Slice vacío (nil slice):
+No tiene array subyacente hasta que se use.
+
+var slice []int
+fmt.Println(slice)      // []
+fmt.Println(slice == nil) // true
+
+Usando append() para inicializar dinámicamente:
+
+    var slice []int // slice nil inicialmente
+    slice = append(slice, 10, 20, 30)
+    fmt.Println(slice) // [10 20 30]
+
+⚡ Resumen:
+
+    Siempre hay un array subyacente, aunque no lo declares explícitamente.
+    Un slice nil es la única excepción hasta que se le asignan datos.
+    Para un slice dinámico sin preocuparte por el array, usa make() o append()

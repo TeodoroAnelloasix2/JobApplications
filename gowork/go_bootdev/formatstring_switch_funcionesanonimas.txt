@@ -1,0 +1,325 @@
+
+Go format strings
+
+Go is less elegant than Python’s f-strings, unfortunately.
+
+    fmt.Printf - Prints a formatted string to standard out.
+    fmt.Sprintf() - Returns the formatted string
+
+These following “formatting verbs” work with the formatting functions above:
+Default Representation
+
+The %v variant prints the Go syntax representation of a value, it’s a nice default.
+
+s := fmt.Sprintf("I am %v years old", 10)
+// I am 10 years old
+
+s := fmt.Sprintf("I am %v years old", "way too many")
+// I am way too many years old
+
+If you want to print in a more specific way, you can use the following formatting verbs:
+String
+
+s := fmt.Sprintf("I am %s years old", "way too many")
+// I am way too many years old
+
+Integer
+
+s := fmt.Sprintf("I am %d years old", 10)
+// I am 10 years old
+
+Float
+
+s := fmt.Sprintf("I am %f years old", 10.523)
+// I am 10.523000 years old
+
+// The ".2" rounds the number to 2 decimal places
+s := fmt.Sprintf("I am %.2f years old", 10.523)
+// I am 10.52 years old
+
+If you’re interested in all the formatting options, you can look at the fmt package’s docs.
+Assignment
+
+Create a new variable called msg on line 9 and use the appropriate formatting function to return a string that contains following:
+
+Hi NAME, your open rate is OPENRATE percentNEWLINE
+
+    Replace NAME with the variable name,
+    Replace OPENRATE with the variable openRate rounded to the nearest “tenths” place, e.g 10.523 should be rounded down to 10.5
+    The word percent should appear as part of the string following the open rate value
+    Replace NEWLINE with the newline \n escape sequence.
+
+Note: fmt.Println automatically ends with a newline, but fmt.Print does not.
+
+-----example
+
+package main
+
+import "fmt"
+
+func main() {
+	const name = "Saul Goodman"
+	const openRate = 30.5
+
+	// ?
+	msg:=fmt.Sprintf("Hi %s, your open rate is %.1f percent\n",name,openRate)
+
+	// don't edit below this line
+
+	fmt.Print(msg)
+}
+
+The Initial Statement of an If Block
+
+An if conditional can have an “initial” statement. The variable(s) created in the initial statement are only defined within the scope of the if body.
+
+if INITIAL_STATEMENT; CONDITION {
+}
+
+Why Would I Use This?
+
+It has two valuable purposes:
+
+    It’s a bit shorter
+    It limits the scope of the initialized variable(s) to the if block
+
+For example, instead of writing:
+
+length := getLength(email)
+if length < 1 {
+    fmt.Println("Email is invalid")
+}
+
+We can do:
+
+if length := getLength(email); length < 1 {
+    fmt.Println("Email is invalid")
+}
+
+In the example above, length isn’t available in the parent scope, which is nice because we don’t need it there -
+we won’t accidentally use it elsewhere in the function.
+
+Switch
+
+Switch statements are a way to compare a value against multiple options. They are similar to if-else statements but are more concise and readable when the number of options is more than 2.
+
+func getCreator(os string) string {
+    var creator string
+    switch os {
+    case "linux":
+        creator = "Linus Torvalds"
+    case "windows":
+        creator = "Bill Gates"
+    case "mac":
+        creator = "A Steve"
+    default:
+        creator = "Unknown"
+    }
+    return creator
+}
+
+Notice that in Go, the break statement is not required at the end of a case to stop it from falling through to the next case. The break statement is implicit in Go.
+
+If you do want a case to fall through to the next case, you can use the fallthrough keyword.
+
+func getCreator(os string) string {
+    var creator string
+    switch os {
+    case "linux":
+        creator = "Linus Torvalds"
+    case "windows":
+        creator = "Bill Gates"
+
+    // all three of these cases will set creator to "A Steve"
+    case "macOS":
+        fallthrough
+    case "Mac OS X":
+        fallthrough
+    case "mac":
+        creator = "A Steve"
+
+    default:
+        creator = "Unknown"
+    }
+    return creator
+}
+
+
+package main
+
+import "fmt"
+
+func billingCost(plan string) float64 {
+	switch plan {
+	case "basic":
+		return 10.0
+	case "pro":
+		return 20.0
+	case "enterprise":
+		return 50.0
+	default:
+		return 0.0
+	}
+}
+
+
+// don't touch below this line
+
+func main() {
+	plan := "basic"
+	fmt.Printf("The cost for a %s plan is $%.2f\n", plan, billingCost(plan))
+	plan = "pro"
+	fmt.Printf("The cost for a %s plan is $%.2f\n", plan, billingCost(plan))
+	plan = "enterprise"
+	fmt.Printf("The cost for a %s plan is $%.2f\n", plan, billingCost(plan))
+	plan = "free"
+	fmt.Printf("The cost for a %s plan is $%.2f\n", plan, billingCost(plan))
+	plan = "unknown"
+	fmt.Printf("The cost for a %s plan is $%.2f\n", plan, billingCost(plan))
+}
+
+ignore return value
+
+var  example func() (int,int){
+    return 1,2    
+}
+
+
+
+var1, _ =example()
+
+con guion bajo ignoramos el segundo return
+
+Anonymous Functions
+
+Anonymous functions are true to form in that they have no name. They’re useful when defining a function that will only be used once or to create a quick closure.
+
+Let’s say we have a function conversions that accepts another function, converter as input:
+
+func conversions(converter func(int) int, x, y, z int) (int, int, int) {
+	convertedX := converter(x)
+	convertedY := converter(y)
+	convertedZ := converter(z)
+	return convertedX, convertedY, convertedZ
+}
+
+We could define a function normally and then pass it in by name… but it’s usually easier to just define it anonymously:
+
+func double(a int) int {
+    return a + a
+}
+
+func main() {
+    // using a named function
+	newX, newY, newZ := conversions(double, 1, 2, 3)
+	// newX is 2, newY is 4, newZ is 6
+
+    // using an anonymous function
+	newX, newY, newZ = conversions(func(a int) int {
+	    return a * a
+	}, 1, 2, 3)
+	// newX is 1, newY is 4, newZ is 9
+}
+
+
+/*
+Completa la función printReports. Esta función recibe como entrada una secuencia de mensajes: intro, body y outro. 
+Debe llamar a printCostReport una vez por cada mensaje.
+En cada llamada a printCostReport, pásale una función anónima que retorne el costo de un mensaje como un entero. Los costos son los siguientes:
+    Intro: 2 veces la longitud del mensaje.
+    Body: 3 veces la longitud del mensaje.
+    Outro: 4 veces la longitud del mensaje.
+Usa la función incorporada len() para obtener la longitud de una cadena.
+*/
+
+package main
+
+import "fmt"
+
+func printReports(intro, body, outro string) {
+	// ?
+	printCostReport(func(a string) int {return len(a) * 2}, intro )
+	printCostReport(func(a string) int {return len(a)*3 }, body )
+	printCostReport(func(a string) int {return len(a)*4}, outro)
+	
+	
+}
+
+// don't touch below this line
+
+func main() {
+	printReports(
+		"Welcome to the Hotel California",
+		"Such a lovely place",
+		"Plenty of room at the Hotel California",
+	)
+}
+
+func printCostReport(costCalculator func(string) int, message string) {
+	cost := costCalculator(message)
+	fmt.Printf(`Message: "%s" Cost: %v cents`, message, cost)
+	fmt.Println()
+	
+}
+package main
+
+import (
+	"fmt"
+)
+
+func bootup() {
+	// ?
+	defer fmt.Println("TEXTIO BOOTUP DONE")
+	ok := connectToDB()
+	
+	
+	
+	if !ok {
+		return
+	}
+	ok = connectToPaymentProvider()
+	if !ok {
+		return
+	}
+	fmt.Println("All systems ready!")
+}
+
+// don't touch below this line
+
+var shouldConnectToDB = true
+
+func connectToDB() bool {
+	fmt.Println("Connecting to database...")
+	if shouldConnectToDB {
+		fmt.Println("Connected!")
+		return true
+	}
+	fmt.Println("Connection failed")
+	return false
+}
+
+var shouldConnectToPaymentProvider = true
+
+func connectToPaymentProvider() bool {
+	fmt.Println("Connecting to payment provider...")
+	if shouldConnectToPaymentProvider {
+		fmt.Println("Connected!")
+		return true
+	}
+	fmt.Println("Connection failed")
+	return false
+}
+
+func test(dbSuccess, paymentSuccess bool) {
+	shouldConnectToDB = dbSuccess
+	shouldConnectToPaymentProvider = paymentSuccess
+	bootup()
+	fmt.Println("====================================")
+}
+
+func main() {
+	test(true, true)
+	test(false, true)
+	test(true, false)
+	test(false, false)
+}

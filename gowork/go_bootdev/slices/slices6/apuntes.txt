@@ -1,0 +1,18 @@
+Range
+
+Go provides syntactic sugar to iterate easily over elements of a slice:
+
+for INDEX, ELEMENT := range SLICE {
+}
+
+Note: the element is a copy of the value at that index.
+
+For example:
+
+fruits := []string{"apple", "banana", "grape"}
+for i, fruit := range fruits {
+    fmt.Println(i, fruit)
+}
+// 0 apple
+// 1 banana
+// 2 grape

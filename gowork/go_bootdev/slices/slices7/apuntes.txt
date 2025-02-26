@@ -1,0 +1,202 @@
+
+Tricky Slices
+
+The append() function changes the underlying array of its parameter AND returns a new slice.
+This means that using append() on anything other than itself is usually a BAD idea.
+
+// dont do this!
+someSlice = append(otherSlice, element)
+
+Take a look at these head-scratchers:
+Example 1: Works As Expected
+
+Example 2: Something Fishy
+
+i := make([]int, 3, 8)
+fmt.Println("len of i:", len(i))
+fmt.Println("cap of i:", cap(i))
+// len of i: 3
+// cap of i: 8
+
+j := append(i, 4)
+fmt.Println("appending 4 to j from i")
+fmt.Println("j:", j)
+fmt.Println("addr of j:", &j[0])
+// appending 4 to j from i
+// j: [0 0 0 4]
+// addr of j: 0x454000
+
+g := append(i, 5)
+fmt.Println("appending 5 to g from i")
+fmt.Println("addr of g:", &g[0])
+fmt.Println("i:", i)
+fmt.Println("j:", j)
+fmt.Println("g:", g)
+// appending 5 to g from i
+// addr of g: 0x454000
+// i: [0 0 0]
+// j: [0 0 0 5]
+// g: [0 0 0 5]
+
+In this example, however, when 5 is appended to g it overwrites j's fourth index because j and g point to the same underlying array. 
+The append() function only creates a new array when there isn't any capacity left. 
+We created i with a length of 3 and a capacity of 8, which means we can append 5 items before a new array is automatically allocated.
+
+Again, to avoid bugs like this, you should always use the append function on the same slice the result is assigned to:
+
+mySlice := []int{1, 2, 3}
+mySlice = append(mySlice, 4)
+
+Traducción:
+Slices complicados
+
+La función append() cambia el array subyacente de su parámetro Y devuelve un nuevo slice.
+Esto significa que usar append() en cualquier cosa que no sea el mismo slice generalmente es una mala idea.
+
+// ¡No hagas esto!
+someSlice = append(otherSlice, element)
+
+Mira estos ejemplos que confunden:
+✅ Ejemplo 1: Funciona como se espera
+
+a := make([]int, 3)
+fmt.Println("len of a:", len(a)) // longitud de a
+fmt.Println("cap of a:", cap(a)) // capacidad de a
+// len of a: 3
+// cap of a: 3
+
+b := append(a, 4)
+fmt.Println("appending 4 to b from a") // añadiendo 4 a b desde a
+fmt.Println("b:", b)
+fmt.Println("addr of b:", &b[0]) // dirección de memoria del primer elemento de b
+// b: [0 0 0 4]
+// addr of b: 0x44a0c0
+
+c := append(a, 5)
+fmt.Println("appending 5 to c from a") // añadiendo 5 a c desde a
+fmt.Println("addr of c:", &c[0])       // dirección de memoria del primer elemento de c
+fmt.Println("a:", a)
+fmt.Println("b:", b)
+fmt.Println("c:", c)
+// c: [0 0 0 5]
+
+💡 Explicación Detallada:
+⚙️ ¿Qué significa &slice[index]?
+
+    El operador & obtiene la dirección de memoria del elemento en el índice especificado.
+    Por ejemplo:
+
+    &b[0]
+
+    Esto te dice dónde está almacenado el primer elemento de b en la memoria.
+
+🔍 ¿Qué está pasando en el ejemplo?
+
+    a := make([]int, 3)
+        Crea un slice a con 3 ceros → [0 0 0].
+        Longitud = 3 y Capacidad = 3.
+
+    b := append(a, 4)
+        Añade el número 4 al slice a.
+        Dado que la capacidad ya está llena, Go crea un nuevo array en memoria para b.
+        Resultado:
+            a → [0 0 0]
+            b → [0 0 0 4] (nuevo array en memoria)
+
+    c := append(a, 5)
+        De nuevo se usa a, no b, así que Go crea otro nuevo array para c.
+        Resultado:
+            a → [0 0 0]
+            c → [0 0 0 5] (otro array distinto)
+
+    &b[0] y &c[0] dan direcciones diferentes
+        Esto confirma que b y c están almacenados en diferentes lugares de la memoria.
+
+⚠️ ¿Por qué es importante esto?
+
+Si haces algo como:
+
+someSlice = append(otherSlice, element)
+
+Puede causar errores sutiles si esperas que ambos slices compartan datos. append() puede crear un array 
+nuevo en memoria si se excede la capacidad, lo que desconecta los slices.
+✅ Resumen Rápido:
+
+    &slice[index] → Te da la dirección de memoria de ese elemento.
+    Si append() supera la capacidad del slice, crea un nuevo array.
+    Esto significa que el slice original y el nuevo pueden terminar en lugares diferentes en la memoria.
+    Por eso, usa append() directamente sobre el mismo slice si quieres mantener la conexión.
+
+
+En Go, el operador & se usa para obtener la dirección de memoria de una variable. 
+Es decir, devuelve un puntero que apunta al lugar donde esa variable está almacenada.
+📊 Ejemplos básicos:
+
+package main
+
+import "fmt"
+
+func main() {
+    x := 10
+    fmt.Println("Valor de x:", x)      // Muestra el valor: 10
+    fmt.Println("Dirección de x:", &x) // Muestra la dirección de memoria, ej: 0xc0000120b0
+}
+
+
+
+Ejemplo 2: Algo Sospechoso
+
+i := make([]int, 3, 8)
+fmt.Println("len de i:", len(i))
+fmt.Println("cap de i:", cap(i))
+// len de i: 3
+// cap de i: 8
+
+j := append(i, 4)
+fmt.Println("añadiendo 4 a j desde i")
+fmt.Println("j:", j)
+fmt.Println("dir de j:", &j[0])
+// añadiendo 4 a j desde i
+// j: [0 0 0 4]
+// dir de j: 0x454000
+
+g := append(i, 5)
+fmt.Println("añadiendo 5 a g desde i")
+fmt.Println("dir de g:", &g[0])
+fmt.Println("i:", i)
+fmt.Println("j:", j)
+fmt.Println("g:", g)
+// añadiendo 5 a g desde i
+// dir de g: 0x454000
+// i: [0 0 0]
+// j: [0 0 0 5]
+// g: [0 0 0 5]
+
+En este ejemplo, al añadir 5 a g, sobrescribe el cuarto índice de j porque j y g apuntan al mismo array subyacente.
+
+La función append() solo crea un nuevo array si no queda capacidad disponible.
+Aquí, creamos i con:
+
+    Longitud (len) = 3
+    Capacidad (cap) = 8
+
+➡️ Esto significa que podemos añadir hasta 5 elementos más antes de que se cree un nuevo array.
+⚠️ ¿Por qué ocurre esto?
+
+    Cuando haces append(i, 4), j usa el array subyacente de i (queda espacio).
+    Luego, al hacer append(i, 5), g también usa ese array.
+    Resultado: Ambos (j y g) modifican el mismo array → colisión de datos.
+
+✅ ¿Cómo evitarlo?
+
+💡 Siempre asigna el resultado del append() al mismo slice si quieres evitar sobrescrituras inesperadas.
+
+mySlice := []int{1, 2, 3}
+mySlice = append(mySlice, 4) // CORRECTO
+
+Así aseguras que las modificaciones afectan al slice correcto y, si es necesario, se crea un nuevo array.
+🟢 En Resumen:
+
+    append() usa el array existente si hay capacidad.
+    Si no hay espacio, crea uno nuevo.
+    Si trabajas con varios slices derivados del mismo array, ¡cuidado con sobrescrituras! ⚡

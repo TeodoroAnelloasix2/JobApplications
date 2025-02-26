@@ -1,0 +1,87 @@
+Maps
+
+Maps are similar to JavaScript objects, Python dictionaries, and Ruby hashes.
+Maps are a data structure that provides key->value mapping.
+
+The zero value of a map is nil.
+
+We can create a map by using a literal or by using the make() function:
+
+ages := make(map[string]int)
+ages["John"] = 37
+ages["Mary"] = 24
+ages["Mary"] = 21 // overwrites 24
+
+ages = map[string]int{
+  "John": 37,
+  "Mary": 21,
+}
+
+The len() function works on a map, it returns the total number of key/value pairs.
+
+ages = map[string]int{
+  "John": 37,
+  "Mary": 21,
+}
+fmt.Println(len(ages)) // 2
+
+
+========================================
+
+que diferencia hay entre maps y struct en go? así a primer impacto parecen "objetos" muy similares
+
+
+A primera vista, maps y structs en Go pueden parecer similares porque ambos almacenan datos relacionados, 
+pero tienen diferencias clave en cómo funcionan y cuándo deberías usarlos:
+📋 Structs (struct)
+
+    Definición de campos fija: Los campos y sus tipos se definen en el momento de la creación del struct.
+    Tipado fuerte: Cada campo tiene un tipo explícito, lo que permite mayor seguridad en tiempo de compilación.
+    Ideal para datos estructurados: Úsalo cuando conoces la estructura exacta de los datos que vas a manejar.
+    Acceso directo a los campos: Puedes acceder a los campos usando el punto (.).
+
+Ejemplo:
+
+type User struct {
+    Name  string
+    Age   int
+    Email string
+}
+
+user := User{Name: "Alice", Age: 30, Email: "alice@example.com"}
+fmt.Println(user.Name)  // Alice
+
+🗺️ Maps (map)
+
+Claves dinámicas: Las claves pueden ser definidas en tiempo de ejecución y pueden 
+ser de cualquier tipo comparable (como string, int, etc.).
+Estructura flexible: No necesitas definir la estructura de antemano.
+Útil para datos dinámicos o desconocidos: Perfecto cuando no conoces de antemano 
+los nombres de las claves o necesitas agregar/eliminar claves dinámicamente.
+Acceso mediante clave: Se accede a los valores usando la sintaxis map[key].
+
+Ejemplo:
+
+user := map[string]string{
+    "Name":  "Alice",
+    "Email": "alice@example.com",
+}
+
+fmt.Println(user["Name"])  // Alice
+
+⚔️ ¿Cuándo usar cada uno?
+
+    ✅ Usa struct cuando:
+        Conoces la estructura de los datos.
+        Quieres seguridad de tipos.
+        Trabajas con datos relacionados de forma lógica (como modelos o entidades).
+
+    ✅ Usa map cuando:
+        Necesitas flexibilidad en las claves.
+        Estás manejando datos dinámicos o no estructurados.
+        No sabes cuántos campos tendrás o sus nombres con antelación.
+
+🧠 Resumen rápido:
+
+    struct → Fijo y tipado.
+    map → Dinámico y flexible.
