@@ -1,0 +1,23 @@
+
+ NPM(K)    PM(M)      WS(M)     CPU(s)      Id  SI ProcessName
+ ------    -----      -----     ------      --  -- -----------
+      0     0,00     513,36     140,74  191832 …33 firefox
+      0     0,00     356,13     540,90    3233 …33 gnome-shell
+      0     0,00     298,72     149,35  200914 …57 code
+      0     0,00     282,10       5,58    3548 …03 snap-store
+      0     0,00     273,64      30,25  201108 …08 pwsh
+      0     0,00     272,36      61,92  196128 …33 Isolated Web Co
+      0     0,00     218,48      27,94  200973 …57 Code --standard-schemes=vscode-webview,vscode-file --enable-sandbox --secure-schemes=vscode-webview,vscode-file --cors-schemes=vscode-webview,vsco…
+      0     0,00     194,69      18,65  200857 …57 code .
+      0     0,00     175,86  27.016,87   54826 …02 code
+      0     0,00     174,51       1,71  208476 …33 Isolated Web Co
+
+
+Count             : 10
+Average           : 
+Sum               : 2893914112
+Maximum           : 
+Minimum           : 
+StandardDeviation : 
+Property          : WorkingSet64
+

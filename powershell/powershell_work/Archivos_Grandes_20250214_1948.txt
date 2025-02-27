@@ -1,0 +1,16 @@
+Archivos más grandes en /home/teo/powershell_work
+El más grande es el: archivos_dim.ps1 con 1485
+El tamaño total es de: 
+
+Name                               Length
+----                               ------
+archivos_dim.ps1                     1485
+P_memery_20250214_1343.txt           1066
+P_memery_20250214_1349.txt           1066
+first_10_memory_proces.ps1            945
+not_responding_process.ps1            831
+first_5_cpu_proces.ps1                632
+Archivos_Grandes_20250214_1948.txt    466
+2.txt                                   9
+1.txt                                   0
+
