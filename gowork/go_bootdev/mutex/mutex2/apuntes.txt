@@ -1,0 +1,230 @@
+Mutex Review
+
+The principal problem that mutexes help us avoid is the concurrent read/write problem. This problem arises when one thread is writing to a variable while another thread is reading from that same variable at the same time.
+
+When this happens, a Go program will panic because the reader could be reading bad data while it's being mutated in place.
+
+mutex
+Mutex Example
+
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	m := map[int]int{}
+	go writeLoop(m)
+	go readLoop(m)
+
+	// stop program from exiting, must be killed
+	block := make(chan struct{})
+	<-block
+}
+
+func writeLoop(m map[int]int) {
+	for {
+		for i := 0; i < 100; i++ {
+			m[i] = i
+		}
+	}
+}
+
+func readLoop(m map[int]int) {
+	for {
+		for k, v := range m {
+			fmt.Println(k, "-", v)
+		}
+	}
+}
+
+The example above creates a map, then starts two goroutines which each have access to the map.
+One goroutine continuously mutates the values stored in the map, while the other prints the values it finds in the map.
+
+If we run the program on a multi-core machine, we get the following output: fatal error: concurrent map iteration and map write
+
+In Go, it isn’t safe to read from and write to a map at the same time.
+Mutexes to the Rescue
+
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	m := map[int]int{}
+
+	mu := &sync.Mutex{}
+
+	go writeLoop(m, mu)
+	go readLoop(m, mu)
+
+	// stop program from exiting, must be killed
+	block := make(chan struct{})
+	<-block
+}
+
+func writeLoop(m map[int]int, mu *sync.Mutex) {
+	for {
+		for i := 0; i < 100; i++ {
+			mu.Lock()
+			m[i] = i
+			mu.Unlock()
+		}
+	}
+}
+
+func readLoop(m map[int]int, mu *sync.Mutex) {
+	for {
+		mu.Lock()
+		for k, v := range m {
+			fmt.Println(k, "-", v)
+		}
+		mu.Unlock()
+	}
+}
+
+In this example, we added a sync.Mutex{} and named it mu. 
+In the write loop, the Lock() method is called before writing, and then the Unlock() is called when we're done. 
+This Lock/Unlock sequence ensures that no other threads can Lock() 
+the mutex while we have it locked – any other threads attempting to Lock() will block and wait until we Unlock().
+
+In the reader, we Lock() before iterating over the map, and likewise Unlock() when we're done. 
+Now the threads share the memory safely!
+
+How many threads can Lock a mutex at once?
+La respuesta es: 1
+
+ChatGPT Plus
+
+Solo 1 hilo puede bloquear (Lock()) un mutex a la vez.
+Cualquier otro hilo que intente bloquearlo quedará en espera hasta que el mutex se desbloquee (Unlock()).
+
+RW Mutex
+The standard library also exposes a sync.RWMutex
+In addition to these methods:
+
+    Lock()
+    Unlock()
+
+The sync.RWMutex also has these methods for concurrent reads:
+
+    RLock()
+    RUnlock()
+
+The sync.RWMutex improves performance in read-intensive processes.
+Multiple goroutines can safely read from the map simultaneously, as many RLock() calls can occur at the same time. 
+However, only one goroutine can hold a Lock(), and during this time, all RLock() operations are blocked.
+
+Básicamente, sync.RWMutex es una versión mejorada de sync.Mutex que permite que múltiples goroutines lean un recurso al mismo tiempo, 
+pero sigue asegurando que solo una goroutine pueda escribir en él a la vez.
+Diferencias clave entre sync.Mutex y sync.RWMutex:
+
+    sync.Mutex
+        Solo una goroutine puede acceder al recurso cuando está bloqueado con Lock().
+        Todas las demás goroutines deben esperar, incluso si solo quieren leer.
+
+    sync.RWMutex
+        Permite múltiples lectores al mismo tiempo con RLock().
+        Solo permite un escritor con Lock(), y mientras este escribe, ningún otro puede leer o escribir.
+
+Ejemplo práctico:
+
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+var (
+	mu  sync.RWMutex
+	data = make(map[string]string)
+)
+
+func write(key, value string) {
+	mu.Lock() // Bloquea la escritura (nadie puede leer ni escribir mientras tanto)
+	defer mu.Unlock()
+	data[key] = value
+	fmt.Println("Escrito:", key, "=", value)
+}
+
+func read(key string) {
+	mu.RLock() // Permite múltiples lecturas simultáneas
+	defer mu.RUnlock()
+	fmt.Println("Leído:", key, "=", data[key])
+}
+
+func main() {
+	go write("user", "Alice")
+	time.Sleep(100 * time.Millisecond) // Damos tiempo a la escritura
+
+	go read("user")
+	go read("user") // Varias lecturas pueden ocurrir a la vez
+	time.Sleep(100 * time.Millisecond)
+}
+
+Resumen:
+
+Si solo usas sync.Mutex, todas las operaciones (lectura y escritura) se bloquean unas a otras.
+Si usas sync.RWMutex, varias lecturas pueden ocurrir a la vez, pero solo una escritura puede ejecutarse y bloqueará todo lo demás.
+
+✅ Muchas lecturas simultáneas → sin problema.
+❌ Lectura y escritura al mismo tiempo → problema. 
+❌ Múltiples escrituras al mismo tiempo → problema.
+
+
+Read/Write Mutex Review
+
+Maps are safe for concurrent read access, just not concurrent read/write or write/write access. 
+A read/write mutex allows all the readers to access the map at the same time, but a writer will still lock out all other readers and writers.
+
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	m := map[int]int{}
+
+	mu := &sync.RWMutex{}
+
+	go writeLoop(m, mu)
+	go readLoop(m, mu)
+	go readLoop(m, mu)
+	go readLoop(m, mu)
+	go readLoop(m, mu)
+
+	// stop program from exiting, must be killed
+	block := make(chan struct{})
+	<-block
+}
+
+func writeLoop(m map[int]int, mu *sync.RWMutex) {
+	for {
+		for i := 0; i < 100; i++ {
+			mu.Lock()
+			m[i] = i
+			mu.Unlock()
+		}
+	}
+}
+
+func readLoop(m map[int]int, mu *sync.RWMutex) {
+	for {
+		mu.RLock()
+		for k, v := range m {
+			fmt.Println(k, "-", v)
+		}
+		mu.RUnlock()
+	}
+}
+
+By using a sync.RWMutex, our program becomes more efficient. 
+We can have as many readLoop() threads as we want,while still ensuring that the writers have exclusive access.
