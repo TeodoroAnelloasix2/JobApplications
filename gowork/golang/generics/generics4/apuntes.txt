@@ -1,0 +1,88 @@
+Constraints
+
+Sometimes you need the logic in your generic function to know something about the types it operates on. 
+The example we used in the first exercise didn't need to know anything about the types in the slice, so we used the built-in any constraint:
+
+func splitAnySlice[T any](s []T) ([]T, []T) {
+    mid := len(s)/2
+    return s[:mid], s[mid:]
+}
+
+Constraints are just interfaces that allow us to write generics that only operate within the constraints of a given interface type. 
+In the example above, the any constraint is the same as the empty interface because it means the type in question can be anything.
+Creating a Custom Constraint
+
+Let's take a look at the example of a concat function. It takes a slice of values and concatenates the values into a string. 
+This should work with any type that can represent itself as a string, even if it's not a string under the hood. 
+For example, a user struct can have a .String() that returns a string with the user's name and age.
+
+type stringer interface {
+    String() string
+}
+
+func concat[T stringer](vals []T) string {
+    result := ""
+    for _, val := range vals {
+        // this is where the .String() method
+        // is used. That's why we need a more specific
+        // constraint instead of the any constraint
+        result += val.String()
+    }
+    return result
+}
+
+Naming Generic Types
+
+Let's look at this simple example again:
+
+func splitAnySlice[T any](s []T) ([]T, []T) {
+    mid := len(s)/2
+    return s[:mid], s[mid:]
+}
+
+Remember, T is just a variable name, We could have named the type parameter anything. 
+T happens to be a fairly common convention for a type variable, similar to how i is a convention for index variables in loops.
+
+This is just as valid:
+
+func splitAnySlice[MyAnyType any](s []MyAnyType) ([]MyAnyType, []MyAnyType) {
+    mid := len(s)/2
+    return s[:mid], s[mid:]
+}
+
+
+Interface Type Lists
+
+When generics were released, a new way of writing interfaces was also released at the same time!
+
+We can now simply list a bunch of types to get a new interface/constraint.
+
+// Ordered is a type constraint that matches any ordered type.
+// An ordered type is one that supports the <, <=, >, and >= operators.
+type Ordered interface {
+    ~int | ~int8 | ~int16 | ~int32 | ~int64 |
+        ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
+        ~float32 | ~float64 |
+        ~string
+}
+
+
+package main
+
+import (
+    "fmt"
+    "golang.org/x/exp/constraints"
+)
+
+func Max[T constraints.Ordered](a, b T) T {
+    if a > b {
+        return a
+    }
+    return b
+}
+
+func main() {
+    fmt.Println(Max(3, 5))           // 5
+    fmt.Println(Max(3.14, 2.71))     // 3.14
+    fmt.Println(Max("apple", "banana")) // "banana"
+}
