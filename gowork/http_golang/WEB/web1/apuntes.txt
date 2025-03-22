@@ -1,0 +1,8 @@
+¿Cómo funciona la comunicación en la web?
+
+Cuando dos computadoras se comunican entre sí, deben seguir las mismas reglas. 
+Un hablante de inglés no puede comunicarse verbalmente con un hablante de japonés sin un lenguaje común; 
+de manera similar, dos computadoras necesitan hablar el mismo "idioma" para comunicarse.
+
+Este "idioma" que usan las computadoras se llama protocolo. 
+El protocolo más popular para la comunicación en la web es HTTP, que significa Hypertext Transfer Protocol (Protocolo de Transferencia de Hipertexto).

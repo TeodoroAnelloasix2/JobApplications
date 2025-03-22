@@ -1,0 +1,71 @@
+Marshal JSON
+
+If there is a way to unmarshal JSON data, there must be a way to marshal it as well. 
+The json.Marshal function converts a Go struct into a slice of bytes representing JSON data.
+Example
+
+type Board struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	TeamId   int    `json:"team"`
+	TeamName string `json:"team_name"`
+}
+
+board := Board{
+	Id:       1,
+	Name:     "API",
+	TeamId:   9001,
+	TeamName: "Backend",
+}
+
+data, err := json.Marshal(board)
+if err != nil {
+	log.Fatal(err)
+}
+fmt.Println(string(data))
+// {"id":1,"name":"API","team":9001,"team_name":"Backend"}
+
+=======================================================================
+
+XML
+
+We can't talk about JSON without mentioning XML. 
+XML, or "Extensible Markup Language" is a text-based format for representing structured information, like JSON - but different (and a bit more verbose).
+
+XML Syntax
+
+XML is a markup language like HTML, but it's more generalized in that it does not use predefined tags. 
+Just like how in a JSON object keys can be called anything, XML tags can also have any name.
+
+XML representing a movie:
+
+<root>
+  <id>1</id>
+  <genre>Action</genre>
+  <title>Iron Man</title>
+  <director>Jon Favreau</director>
+</root>
+
+The same data in JSON:
+
+{
+  "id": "1",
+  "genre": "Action",
+  "title": "Iron Man",
+  "director": "Jon Favreau"
+}
+Why Use XML?
+
+XML and JSON both accomplish similar tasks, so which should you use?
+
+XML used to be used for the same things that today JSON is primarily used for. 
+Configuration files, HTTP bodies, and other data-transfer can work with either JSON or XML. 
+Personally, I believe that if JSON works, you should favor it over XML. 
+
+JSON is:
+
+    Lighter-weight
+    Easier to read
+    Has better support in most programming languages
+
+There are cases where XML might still be the better, or maybe even necessary, but that tends to be the exception rather than the rule.

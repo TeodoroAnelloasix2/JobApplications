@@ -1,0 +1,93 @@
+HTTP Requests and Responses
+
+At the heart of HTTP is a simple request-response system. The "requesting" computer, also known as the "client", asks another computer for some information. 
+That computer, "the server" sends back a response with the information that was requested.
+
+HTTP Powers Website
+HTTP, or Hypertext Transfer Protocol, is a protocol designed to transfer information between computers.
+There are other protocols for communicating over the internet, but HTTP is the most popular and is particularly great for websites and web applications. 
+Each time you visit a website, your browser is making an HTTP request to that website's server. 
+The server responds with all the text, images, and styling information that your browser needs to render its pretty website!
+
+HTTP URLs
+
+A URL, or Uniform Resource Locator, is the address of another computer, or "server" on the internet.
+Part of the URL specifies where to reach the server, and part of it tells the server what information we want.
+
+url image to resource on internet
+
+Put simply, a URL represents a piece of information on some computer somewhere.
+We can get access to it by making a request, and reading the response that the server replies with.
+
+Traducción y Explicación de func Indent
+
+func Indent(dst *bytes.Buffer, src []byte, prefix, indent string) error
+
+Traducción
+
+La función Indent agrega a dst (un *bytes.Buffer) una versión indentada del JSON contenido en src.
+
+Cada elemento de un objeto o un arreglo JSON comienza en una nueva línea indentada, que empieza con prefix, 
+seguido de una o más copias de indent según el nivel de anidación.
+
+Detalles adicionales:
+
+    Los datos añadidos a dst no comienzan con prefix ni con indentación, lo que facilita su inserción dentro de otros datos JSON formateados.
+
+    Los caracteres de espacio en blanco al inicio de src (espacio, tabulación, retorno de carro, nueva línea) se eliminan.
+
+    Los caracteres de espacio al final de src se conservan y se copian a dst.
+
+📌 Ejemplo:
+Si src no tiene espacios finales, dst tampoco los tendrá.
+Si src termina con una nueva línea, dst también la conservará.
+Explicación con un Ejemplo
+
+Supongamos que tenemos un JSON sin formato y queremos formatearlo con indentación:
+Código en Go
+
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+)
+
+func main() {
+	src := []byte(`{"name":"Alice","age":25,"skills":["Go","Python"]}`)
+
+	var dst bytes.Buffer
+	err := json.Indent(&dst, src, "", "  ") // Prefijo vacío, indentación con 2 espacios
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	fmt.Println(dst.String())
+}
+
+Salida
+
+{
+  "name": "Alice",
+  "age": 25,
+  "skills": [
+    "Go",
+    "Python"
+  ]
+}
+
+Explicación
+
+    Se usa json.Indent(&dst, src, "", " ") para formatear el JSON con una indentación de 2 espacios.
+
+    prefix es "": no se agrega un prefijo antes de cada línea.
+
+    indent es " ": cada nivel de anidación se indenta con 2 espacios.
+
+    Se guarda el resultado en dst, que es un bytes.Buffer.
+
+    Finalmente, se imprime dst.String() para ver el JSON bien formateado.
+
+📌 Uso práctico: json.Indent es útil para formatear JSON en una salida legible antes de imprimirlo o guardarlo en un archivo. 🚀
