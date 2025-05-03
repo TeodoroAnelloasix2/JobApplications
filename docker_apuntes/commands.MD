@@ -1,5 +1,6 @@
 # Commandos básico y utiles para el curso
 
+
 ## Índice
 
 1. [**Network tools**](#network-tools)
@@ -18,7 +19,7 @@
     - [Comandos para Seguridad y Control de Acceso](#comandos-para-seguridad-y-control-de-acceso)
     - [Comandos para Configuraciones Avanzadas](#comandos-para-configuraciones-avanzadas)
 
-## italianodev usuario con teodoro.anello.job --> docker hub 
+
 
 ## Network tools
 
@@ -182,6 +183,8 @@ docker rm nombre_del_contenedor
 - **Eliminar una imagen local:**
 ```shell
 docker image rm nombre_de_la_imagen
+
+docker rmi nombre_de_la_imagen
 ```
 ### Trabajando con Redes y Volúmenes
 
@@ -205,12 +208,28 @@ docker image rm nombre_de_la_imagen
 
 - **Ejecutar un comando en un contenedor en ejecución:**
  ```shell
- #docker exec -it nombre_del_contenedor comando
+ #docker exec -it nombre_del_contenedor comando, El comando exec ejecuta el comando y sale, con -it arranca terminal interactiva
 docker exec -it localbillingApp sh
+
+docker exec -it contenedorid bash
+docker exec contenedorid comando   ejemplo:  docker exec pensive_perlman uname -a
+
 ```
+- **docker attach**
+ ```shell
+#Muestra lo que es la salida estandar de los  contenedores en background. Me asocio al comando que se està ejecutando en ese momento en el contenedor
+docker attach contenedorid
+
+docker run --name ubuntu1 -d -it ubuntu top #ejecuta top 
+docker attach ubuntu1 
+```
+
 - **Copiar archivos entre el host y un contenedor:**
  ```shell
-  docker cp archivo.txt nombre_del_contenedor:/ruta/destino
+  #Copia desde anfitrion a contenedor
+  docker cp /ruta/archivo nombre_del_contenedor:/ruta/destino
+  #Copiar desde contenedor a Sistema operativo principal
+  docker cp contenedor:/ruta/archivo /destino
   ```
 ### Docker Compose
 
@@ -246,9 +265,10 @@ docker exec -it localbillingApp sh
 ```
 ### Comandos para Información y Estadísticas
 
-- **Ver detalles de un contenedor:**
+- **Ver detalles de un contenedor o imagen :**
  ```shell
   docker inspect nombre_del_contenedor
+  docker inspect image_id
 ```
 - **Obtener estadísticas de uso de recursos de un contenedor:**
  ```shell
@@ -275,10 +295,14 @@ docker exec -it localbillingApp sh
 ```
 ### Comandos para Configuraciones Avanzadas
 
-- **Crear un contenedor con un archivo de configuración personalizada:**
+
+- **Crear un contenedor con un archivo de configuración personalizada y variable :**
  ```shell
+  
   docker run -v ruta/local:/ruta/contenedor -e variable_de_entorno=valor nombre_de_la_imagen
 ```
+
+
 - **Especificar recursos de sistema para un contenedor (CPU, memoria, etc.):**
  ```shell
  docker run --cpu-shares=512 -m 256m nombre_de_la_imagen
@@ -299,6 +323,9 @@ docker network prune
   - **Visualizar logs de un contenedor**
  ```shell
 docker logs contenedor_id | contenedor_nombre
+docker logs quirky_euclid --tail 10 #ultimas 10 lineas 
+docker logs contenedorid -f  #Mirar los logs de forma infinita
+docker kill contenedorid  #para el contenedor y los procesos
  ```
 
   - **Systemctl opcion docker**
@@ -342,3 +369,34 @@ curl http://localhost:8081 para probar la redireccion con peticion http
  docker start -i contenedorid | contenedornombre docker start -i mi_ubuntu (modo interactivo para un contenedor parado)
  docker stop contenedorid | contenedornombre
  ```
+
+
+ - **Ver recursos contenedores**
+ ```shell 
+ docker top nobre_contenedor 
+ docker stats nombre_contenedor
+ ```
+
+
+ - **System** 
+ ```shell 
+ Usage:  docker system COMMAND
+
+Manage Docker
+
+Commands:
+  df          Show docker disk usage
+  events      Get real time events from the server
+  info        Display system-wide information
+  prune       Remove unused data
+
+ #Informacion sobre el sistema docker
+ docker system info 
+#Info sobre contenedores y memoria usada
+  docker system df
+#Saca logs / info sobre lo que pasa en el sistema docker (arranque contenedor, pull imagenes, destroy container...)
+docker system events
+
+ ```
+
+
