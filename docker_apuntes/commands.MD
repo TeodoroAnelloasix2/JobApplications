@@ -422,4 +422,25 @@ docker system events
 
  ```
 
+ - **Link** 
+ ```shell 
+docker run -it --rm --name nombre --link contenedor:alias imagen:tag #Deprecated
+docker run -it --rm --name b3 --link b1:maquina1 busybox:latest   #Enlaza el b1 desde el b3. Basicamente se agrega entrada a /etc/hosts.
+
+ ```
+  - **2 contenedores en una misma red**
+```shell
+
+docker run -d --name mysql_client -p 3101:3306 -e MYSQL_ROOT_PASSWORD=system --network red1 mysql 
+docker run -d --name mysql_server -p 3100:3306 -e MYSQL_ROOT_PASSWORD=system --network red1 mysql 
+
+#Los contenedores ahora se cominucan con nombres, puertos etc.. es decir no hacen falta configuraciones extra si se encuentran en la misma red
+
+#Wordpress con entornos separados
+
+docker run -d --name sqlwp --env-file mysql.properties --network red1 mysql:latest #Crear bd
+
+```
+
+
 
