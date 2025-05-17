@@ -105,6 +105,7 @@ docker images
 ```shell 
 #docker run [opciones] nombre_del_contenedor nombre_de_la_imagen
 docker run -p 80:80 -p 7080:7080 --name containerBilling sotobotero/billingapp
+
 ```
 - **crear un contenedor de postgres y una base de datos en el mismo comando:**
 ```shell
@@ -186,16 +187,26 @@ docker image rm nombre_de_la_imagen
 
 docker rmi nombre_de_la_imagen
 ```
+
+
 ### Trabajando con Redes y Volúmenes
 
 - **Crear una red personalizada:**
  ```shell 
  docker network create nombre_de_la_red
+ docker network create --subnet=192.168.10.0/24 red2  
+ nmcli connection 
+ docker run -it --name ubuntuServ1 --network red1 ubuntu #crear contenedor en una red 
+ docker network connect red2 ubuntuServ1  #Agregar contenedor a una red
+ docker network disconnect red2 ubuntuServ1 #Sacar contenedor de una red
+ docker network create --subnet=172.128.0.0/16 --gateway=172.128.0.1 --ip-range=172.128.10.0/24 red3 
 ```
 - **Listar redes:**
  ```shell
  docker network ls
 ```
+
+
 - **Crear un volumen:**
  ```shell
  docker volume create nombre_del_volumen
@@ -263,6 +274,12 @@ docker attach ubuntu1
  ```shell
  docker network inspect nombre_de_la_red
 ```
+
+- **Inspeccionar una imagen:**
+ ```shell
+ docker image inspect nombre_imagen
+```
+
 ### Comandos para Información y Estadísticas
 
 - **Ver detalles de un contenedor o imagen :**
@@ -300,6 +317,11 @@ docker attach ubuntu1
  ```shell
   
   docker run -v ruta/local:/ruta/contenedor -e variable_de_entorno=valor nombre_de_la_imagen
+
+  #Pasar variables de entorno mediante un archivo
+
+  docker run -d --name mysql3 --env-file mysql.properties mysql 
+  docker run -d --name mysql3 --env-file archivo_con_varaibles imagen
 ```
 
 
@@ -359,7 +381,7 @@ docker run -d image (ejecuta en background y deja en funcion el contenedor si es
 
 docker run --name micontenedor -d -it image
 
-docker run -d -p 8081:80 nginx (-p redirecciona puertos -p puerto_anfitrion:puerto_contenedor)
+docker run -d -p 8081:80 nginx #(-p redirecciona puertos -p puerto_anfitrion:puerto_contenedor, -P mayuscula mapea puerto aleatorio)
 curl http://localhost:8081 para probar la redireccion con peticion http
 
  ```
@@ -375,6 +397,7 @@ curl http://localhost:8081 para probar la redireccion con peticion http
  ```shell 
  docker top nobre_contenedor 
  docker stats nombre_contenedor
+ docker ports contenedor_nombre
  ```
 
 
