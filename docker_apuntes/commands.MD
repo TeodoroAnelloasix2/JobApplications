@@ -206,14 +206,25 @@ docker rmi nombre_de_la_imagen
  docker network ls
 ```
 
-
 - **Crear un volumen:**
  ```shell
+ docker run -it -v /datos --name ubuntu1 ubuntu bash  #Esto crea un volumen en /var/lib/docker/volumes 
+
+ # . Si dentro de directorio /datos (contenedor) creamos un fichero, este se guardaria aqui -> /var/lib/docker/volumes/hash_volumen/_data o viceversa
  docker volume create nombre_del_volumen
+
+
+ docker volume create vol1
+ docker run -it --name ubuntuVol1 -v vol1:/dir1 ubuntu bash   #El volumen vol1 se monta en :/dir1 --> volumen:/directorio
+ -v volumen:/directorio:ro  #ro es Read Only (solo lectura)
+
 ```
+
 - **Listar volúmenes:**
  ```shell
  docker volume ls
+ docker volume inspect hash_volume
+ docker volume inspect ab7385ca2e94d01c2803b600736201c3928f4bf94ecfc925baa7ecc18d945421 
 ```
 ### Interactuando con Contenedores
 
@@ -428,6 +439,7 @@ docker run -it --rm --name nombre --link contenedor:alias imagen:tag #Deprecated
 docker run -it --rm --name b3 --link b1:maquina1 busybox:latest   #Enlaza el b1 desde el b3. Basicamente se agrega entrada a /etc/hosts.
 
  ```
+
   - **2 contenedores en una misma red**
 ```shell
 
@@ -436,9 +448,11 @@ docker run -d --name mysql_server -p 3100:3306 -e MYSQL_ROOT_PASSWORD=system --n
 
 #Los contenedores ahora se cominucan con nombres, puertos etc.. es decir no hacen falta configuraciones extra si se encuentran en la misma red
 
+
 #Wordpress con entornos separados
 
 docker run -d --name sqlwp --env-file mysql.properties --network red1 mysql:latest #Crear bd
+docker run -d --name wp1 -p 9000:80 --network red1 --env-file wordpress.properties wordpress #Arrancar wp
 
 ```
 
