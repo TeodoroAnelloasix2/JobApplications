@@ -218,6 +218,27 @@ docker rmi nombre_de_la_imagen
  -v volumen:/directorio:ro  #ro es Read Only (solo lectura)
 
 ```
+- **Compartir volumenes entre multiples contenedor**
+```shell
+docker run -it -v voluTest:/datos --name ubu4 ubuntu bash #Crear un volume y un contenedor
+docker run -it --name ubu5 --volumes-from ubu4 ubuntu bash 
+#Dentro del contenedor veremos los datos del volume que usa ubu4
+
+root@950646871b92:/# ls 
+bin  boot  datos  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+root@950646871b92:/# ls datos/
+datos.txt
+root@950646871b92:/# 
+
+
+```
+- **Compartir directorio entre contenedor y host**
+
+```shell
+docker run -it -v /ruta/directorio/host:/rutaContenedor --name Name image:tag #Esto comparte un directorio entre host y contenedor (montaje de tipo Bind)
+
+```
+
 
 
 - **Listar volúmenes:**
@@ -448,13 +469,40 @@ docker run -d --name mysql_server -p 3100:3306 -e MYSQL_ROOT_PASSWORD=system --n
 
 #Los contenedores ahora se cominucan con nombres, puertos etc.. es decir no hacen falta configuraciones extra si se encuentran en la misma red
 
-
 #Wordpress con entornos separados
-
 docker run -d --name sqlwp --env-file mysql.properties --network red1 mysql:latest #Crear bd
 docker run -d --name wp1 -p 9000:80 --network red1 --env-file wordpress.properties wordpress #Arrancar wp
 
 ```
 
+- **Montaje de tipo tmpfs**
+```shell
+docker run -d -it --name Name --tmpfs /direcotrioContenedor imge:tag #Crear un direcotrio de tipo temporal, si el contenedor se para o se elimina los datos se borran 
+```
 
 
+
+- **Ver cambios en una imagen**
+```shell
+docker diff NameContainer 
+#A append
+#C change
+#D delete
+
+#Ejemplo salida de diff
+A /var/cache/debconf/templates.dat-old
+C /var/cache/debconf/config.dat
+A /var/cache/debconf/config.dat-old
+C /var/cache/debconf/templates.dat
+C /var/cache/ldconfig
+C /var/cache/ldconfig/aux-cache
+
+```
+
+- **Crear imagen a partir de un contenedor**
+```shell
+docker commit NombreContenedor NombreImage #imagen lowercase, Esto crea un imagen nueva y se puede ver con docker image ls
+
+
+
+``` 
