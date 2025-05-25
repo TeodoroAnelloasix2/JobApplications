@@ -213,12 +213,12 @@ docker rmi nombre_de_la_imagen
  # . Si dentro de directorio /datos (contenedor) creamos un fichero, este se guardaria aqui -> /var/lib/docker/volumes/hash_volumen/_data o viceversa
  docker volume create nombre_del_volumen
 
-
  docker volume create vol1
  docker run -it --name ubuntuVol1 -v vol1:/dir1 ubuntu bash   #El volumen vol1 se monta en :/dir1 --> volumen:/directorio
  -v volumen:/directorio:ro  #ro es Read Only (solo lectura)
 
 ```
+
 
 - **Listar volúmenes:**
  ```shell
