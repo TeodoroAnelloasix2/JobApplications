@@ -502,7 +502,23 @@ C /var/cache/ldconfig/aux-cache
 - **Crear imagen a partir de un contenedor**
 ```shell
 docker commit NombreContenedor NombreImage #imagen lowercase, Esto crea un imagen nueva y se puede ver con docker image ls
-
-
-
+#Por ejemplo si en un contenedor Ubu1 hemos instalado cosas adicionales podemos crear una imagen
+docker commit Ubu1 ubuntu-wget
+#La informacion se guarda en /var/lib/docker
 ``` 
+
+- **Crear imagen con Dockerfile**
+```shell
+#crear un directorio 
+#creamos Dockerfile
+docker build -t nombreImagen:tag /ruta/Dockerfile
+
+mkdir MiPython
+vim Dockerfile
+#Contenido
+FROM ubuntu
+RUN apt-get update
+RUN apt-get install -y python3
+
+docker build -t mipyth:1.0.0 /home/user/dock/MiPython/
+```

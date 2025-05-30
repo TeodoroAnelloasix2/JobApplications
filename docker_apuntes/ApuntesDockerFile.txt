@@ -1,0 +1,6 @@
+FROM ubuntu  #From indica la base de la imagen desde donde partimos
+
+RUN apt-get update && apt-get install -y python3 git vim iputils-ping \ #Run ejecuta comandos 
+&& echo "1.0.0" >> ./version     
+
+CMD ["echo", "-e","Welcome to this container"] #cmd es el comando por defecto del contenedor, el ultimo es el que se ejecuta ["ejecutable","parametros1","parametro2" ...]
