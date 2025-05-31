@@ -62,7 +62,3 @@ Establecer valor con -e  -> docker run -it --rm -e texto="Ya he cambiado el text
 ENV usuario1="El Italiano" usuario2="Gopher" usuario3=python3
 ENV texto="Esto es un valor por defecto"
 
-
-Prueba 2 
-
-
