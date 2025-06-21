@@ -1,25 +1,6 @@
 # Commandos básico y utiles para el curso
 
 
-## Índice
-
-1. [**Network tools**](#network-tools)
-    - [Linux](#linux)
-    - [Windows Power shell](#windows-power-shell)
-2. [**Docker**](#docker)
-    - [Trabajando con imágenes del container registry](#trabajando-con-imágenes-del-container-registry)
-    - [Construyendo Imágenes](#construyendo-imágenes)
-    - [Comandos Avanzados para Imágenes](#comandos-avanzados-para-imágenes)
-    - [Comandos para la Gestión Básica de Contenedores](#comandos-para-la-gestión-básica-de-contenedores)
-    - [Trabajando con Redes y Volúmenes](#trabajando-con-redes-y-volúmenes)
-    - [Interactuando con Contenedores](#interactuando-con-contenedores)
-    - [Docker Compose](#docker-compose)
-    - [Administración de Redes y Volúmenes](#administración-de-redes-y-volúmenes)
-    - [Comandos para Información y Estadísticas](#comandos-para-información-y-estadísticas)
-    - [Comandos para Seguridad y Control de Acceso](#comandos-para-seguridad-y-control-de-acceso)
-    - [Comandos para Configuraciones Avanzadas](#comandos-para-configuraciones-avanzadas)
-
-
 
 ## Network tools
 
@@ -352,7 +333,7 @@ docker attach ubuntu1
 
   #Pasar variables de entorno mediante un archivo
 
-  docker run -d --name mysql3 --env-file mysql.properties mysql 
+  docker run -d --name mysql3 --env-file mysql.properties mysql
   docker run -d --name mysql3 --env-file archivo_con_varaibles imagen
 ```
 
@@ -485,9 +466,9 @@ docker run -d -it --name Name --tmpfs /direcotrioContenedor imge:tag #Crear un d
 - **Ver cambios en una imagen**
 ```shell
 docker diff NameContainer 
-#A append
-#C change
-#D delete
+A append
+C change
+D delete
 
 #Ejemplo salida de diff
 A /var/cache/debconf/templates.dat-old

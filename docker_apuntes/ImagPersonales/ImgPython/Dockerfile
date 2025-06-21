@@ -8,3 +8,4 @@ ENV  texto="Esto es un valor por defecto"
 ENTRYPOINT ["/bin/sh", "-c"]
 
 CMD ["echo \"Welcome to this container $usuario1 $usuario2 $usuario3 El texto es $texto\""]
+
