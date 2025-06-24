@@ -13,7 +13,7 @@ import (
 
 func AgregaCliente(cl modelos.Cliente) {
 	var idcliente int
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	db := conectar.Conectar()

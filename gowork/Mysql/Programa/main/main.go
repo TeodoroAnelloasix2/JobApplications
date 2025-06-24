@@ -27,8 +27,13 @@ func main() {
 			handlers.ListarId(id)
 		case 3:
 			fmt.Println()
-			NuevoCliente := utils.CapturarDatosCliente()
+			NuevoCliente := utils.CapturarDatosCliente(eleccion)
 			handlers.AgregaCliente(*NuevoCliente)
+		case 4:
+			fmt.Println()
+			id := utils.EligeId()
+			DatosCliente := utils.CapturarDatosCliente(eleccion)
+			handlers.EditaCliente(*DatosCliente, id)
 		default:
 			fmt.Println()
 			fmt.Println("Eleccion no valida")
