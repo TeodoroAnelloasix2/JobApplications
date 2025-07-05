@@ -130,6 +130,9 @@ docker rm $(docker ps -a -q)
 - **Etiquetar una imagen:**
  ```shell
  docker tag nombre_de_la_imagen nueva_etiqueta
+
+# Ejemplo, si tengo una imagen que quiero renombrar para subir a docker hub
+ docker tag miapacheimage1:latest usuario/apache1:1.0.0
 ```
 - **Loguears en un registry:**
  ```shell
@@ -502,4 +505,24 @@ RUN apt-get update
 RUN apt-get install -y python3
 
 docker build -t mipyth:1.0.0 /home/user/dock/MiPython/
+```
+
+- **Subir imagen a dockerhub**
+```shell
+docker login  -u usuario (autenticacin)
+docekr push user/image:version
+```
+- **Empaquetar y desempaquetar imagen dentro de archivo tar**
+# SAVE LOAD
+```shell
+docker image save image:tag -o archivo.tar
+docker image save ubuntu:latest -o ubuimage.tar #tar tfv para ver el contenido del archvio
+docker image load -i archivo.tar
+```
+
+- **Buscar imagenes**
+# Docker search
+```shell
+docker search imgage
+docker search image --filter is-official=ture
 ```

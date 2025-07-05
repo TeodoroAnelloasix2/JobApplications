@@ -122,3 +122,11 @@ docker build -t ejemplovolume .
 docker run -it --rm -p 8080:80 --name c1 ejemplovolume
 docker run -it --rm  --name c2 -p 8081:80 --volumes-from c1 ejemplovolume
 ```
+
+# **LABEL** 🏷️
+Permite agregar metadatos al contenedor
+Sirve para describir información sobre la imagen (autor, versión, descripción, etc.).
+# Es útil para documentación, automatización y organización de imágenes en repositorios.
+```dockerfile
+LABEL maintainer="juan@example.com" version="1.0" description="Imagen de ejemplo con metadatos"
+```
